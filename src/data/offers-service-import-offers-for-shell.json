@@ -1,0 +1,23 @@
+{
+  "2025-05-02T07:34:19.898Z": [
+    {
+      "MRCNumber": "0320970570-103004",
+      "errorMessage": "Terminal 'Salzburg TBG Depot' not found in Platform, not importing 0320970570-103004",
+      "splitPercentage": null,
+      "availableVolume": 32
+    }, {
+      "MRCNumber": "0320970570-102004",
+      "errorMessage": "Terminal 'Salzburg TBG Depot' not found in Platform, not importing 0320970570-102004",
+      "splitPercentage": null,
+      "availableVolume": 32
+    }
+  ],
+  "2025-05-02T07:34:19.913Z": [
+    {
+      "MRCNumber": "0321799369-102004",
+      "errorMessage": "Terminal 'Salzburg TBG Depot' not found in Platform, not importing 0321799369-102004",
+      "splitPercentage": null,
+      "availableVolume": 32
+    }
+  ]
+}
