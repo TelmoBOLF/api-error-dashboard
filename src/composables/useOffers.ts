@@ -28,7 +28,8 @@ export function useOffers() {
       serviceOffers.value = Object.keys(serviceData).reduce<TServiceOffer[]>((acc, timestamp) => {
         return [...acc, ...serviceData[timestamp]]
       }, [])
-
+      console.log('Service offers:', serviceOffers.value.length)
+      console.log('Lambda offers:', lambdaOffers.value.length)
       loading.value = false
     } catch (error) {
       console.error('Error loading data:', error)
