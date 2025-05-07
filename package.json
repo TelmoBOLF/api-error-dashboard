@@ -13,7 +13,6 @@
     "check": "vue-tsc"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.5",
     "compression": "^1.8.0",
     "express": "^5.0.1",
     "sirv": "^3.0.1",
