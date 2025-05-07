@@ -11,5 +11,5 @@ export async function render(_url: string) {
   const ctx = {}
   const html = await renderToString(app, ctx)
 
-  return { html }
+  return html;
 }
