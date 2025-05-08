@@ -70,7 +70,7 @@
   </div>
 
 </template>
-<script>
+<script lang="ts">
 import { onMounted, ref } from 'vue'
 import { useOffers } from './composables/useOffers'
 import StatisticsCard from './components/StatisticsCard.vue'

@@ -1,6 +1,8 @@
 import { ref, computed, watch, Ref } from 'vue'
 import { failedOffersFromLambdaFunction as shellLambdaData, TLambdaOffer } from '../data/import-offers-lambda';
 import { failedOffersFromOffersService as offersServiceData, TServiceOffer } from '../data/offers-service-import-offers-for-shell';
+import axios from 'axios';
+
 
 export function useOffers() {
   const lambdaOffers: Ref<TLambdaOffer[]> = ref([])
@@ -14,10 +16,17 @@ export function useOffers() {
 
   // Load data from JSON files
   const loadData = async () => {
+    let val;
     try {
+      val =  await axios.get('https://obw36egmhvflttun4w6rdoobgy0jcpzd.lambda-url.eu-central-1.on.aws/');
+    } catch (error) {
+      console.error('Error fetching cloudwatch data:', error)
 
-      const lambdaData = shellLambdaData;
-      const serviceData = offersServiceData;
+    }
+    try {
+      
+      const lambdaData = val ? val.data['/aws/lambda/shell-integration-service-staging-importOffers'] : shellLambdaData;
+      const serviceData = val ? val.data['/olf/ecs/logs'] : offersServiceData;
 
       // Flatten lambda offers array (combining all timestamps)
       lambdaOffers.value = Object.keys(lambdaData).reduce<TLambdaOffer[]>((acc, timestamp) => {

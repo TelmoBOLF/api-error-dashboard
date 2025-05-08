@@ -2,26 +2,9 @@ import {
   CloudWatchLogsClient,
   StartQueryCommand,
   GetQueryResultsCommand,
-  ResultField,
 } from "@aws-sdk/client-cloudwatch-logs";
-import { TOffer, TOfferDecoded } from "../utils/types";
 
-// Define types for parameter configuration
-interface CloudWatchQueryConfig {
-  logGroupName: string;
-  queryString: string;
-  startTime?: number; // Optional, defaults to 1 hour ago
-  endTime?: number; // Optional, defaults to now
-}
-
-async function fetchLogsFromCloudwatch(
-  configs: CloudWatchQueryConfig | CloudWatchQueryConfig[]
-): Promise<
-  {
-    logGroupName: string;
-    results: ResultField[][];
-  }[]
-> {
+async function fetchLogsFromCloudwatch(configs){
   const client = new CloudWatchLogsClient({ region: "eu-central-1",  });
   // Convert single config to array for uniform processing
   const queryConfigs = Array.isArray(configs) ? configs : [configs];
@@ -68,8 +51,8 @@ async function fetchLogsFromCloudwatch(
     }
 
     const { logGroupName, queryId } = data;
-    let queryStatus: string | undefined = "Running";
-    let results: ResultField[][] = [];
+    let queryStatus = "Running";
+    let results = [];
 
     do {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // wait 2 sec
@@ -97,15 +80,10 @@ async function fetchLogsFromCloudwatch(
   return Promise.all(resultPromises);
 }
 
-interface LogGroupResults {
-  logGroupName: string;
-  results: ResultField[][];
-}
+function prepareDataForOverview(logGroupResultsArray) {
+  const logsWithoutOffer = {};
 
-function prepareDataForOverview(logGroupResultsArray: LogGroupResults[]): Record<string, Record<string, Array<TOffer>>> {
-  const logsWithoutOffer: Record<string, Record<string, any[]>> = {};
-
-  const allQueryResults: Record<string, Record<string, Array<TOffer>>> = {};
+  const allQueryResults = {};
   // Process each log group's results
   logGroupResultsArray.forEach(({ logGroupName, results }) => {
     // Initialize results for this log group if not exists
@@ -130,7 +108,7 @@ function prepareDataForOverview(logGroupResultsArray: LogGroupResults[]): Record
           // Proces different message formats
           if (parsedMessage?.message?.offers) {
             // Lambda function format
-            parsedMessage.message.offers.map((offer: TOfferDecoded) => {
+            parsedMessage.message.offers.map((offer) => {
               allQueryResults[logGroupName][timestamp].push({
                 MRCNumber: offer.MRCNumber,
                 contactEmail: offer.contactEmail,
@@ -141,7 +119,7 @@ function prepareDataForOverview(logGroupResultsArray: LogGroupResults[]): Record
             });
           } else if (parsedMessage.offer) {
             // Single offer format
-            const offer: TOfferDecoded = parsedMessage.offer;
+            const offer = parsedMessage.offer;
             allQueryResults[logGroupName][timestamp].push({
               MRCNumber: offer.MRCNumber,
               contactEmail: offer.contactEmail,
@@ -151,7 +129,7 @@ function prepareDataForOverview(logGroupResultsArray: LogGroupResults[]): Record
             });
           } else if (parsedMessage.offerDecoded) {
             // Decoded offer format
-            const offer: TOfferDecoded = parsedMessage.offerDecoded;
+            const offer = parsedMessage.offerDecoded;
             allQueryResults[logGroupName][timestamp].push({
               MRCNumber: offer.MRCNumber,
               contactEmail: offer.contactEmail,
@@ -161,7 +139,7 @@ function prepareDataForOverview(logGroupResultsArray: LogGroupResults[]): Record
             });
           } else if (parsedMessage.offers) {
             // Multiple offers format
-            parsedMessage.offers.map((offer: TOfferDecoded) => {
+            parsedMessage.offers.map((offer) => {
               allQueryResults[logGroupName][timestamp].push({
                 MRCNumber: offer.MRCNumber,
                 contactEmail: offer.contactEmail,

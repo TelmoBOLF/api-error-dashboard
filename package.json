@@ -8,12 +8,14 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --outDir dist/server",
+    "build:cloudwatch": "tsc ./cloudwatch-logs/cloudwatch.ts ./cloudwatch-logs/handler.js --allowJs --outDir lambda/cloudwatch",
     "package": "npm run build && zip -r function.zip node_modules dist index.js package.json",
     "preview": "cross-env NODE_ENV=production node server",
     "check": "vue-tsc"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.804.0",
+    "axios": "^1.9.0",
     "compression": "^1.8.0",
     "express": "^5.0.1",
     "sirv": "^3.0.1",
